@@ -11,11 +11,17 @@ type RoleKind =
   | 'writer'
   | 'marketing'
   | 'research'
+  | 'autoresearch'
   | 'generic';
 
 function detectRole(title: string): RoleKind {
   const t = title.toLowerCase();
   if (/(product manager|product owner|\bpm\b|program)/.test(t)) return 'product';
+  // Autonomous ML/LLM research (karpathy/autoresearch). Checked before the
+  // generic engineer/data buckets so "AI Research Agent" maps here.
+  if (/(research agent|ai research|ml research|llm research|autoresearch|auto research|research engineer)/.test(t)) {
+    return 'autoresearch';
+  }
   if (/(engineer|developer|programmer|swe|architect|backend|frontend|full)/.test(t)) return 'engineer';
   if (/(design|ux|ui|creative)/.test(t)) return 'design';
   if (/(qa|quality|test|sdet)/.test(t)) return 'qa';
@@ -103,6 +109,19 @@ function contributionFor(role: RoleKind, goal: string, agent: Agent): string {
         `• A quick script for 5 user conversations.`,
         `• Synthesis into "must-have" vs "nice-to-have".`,
         `I'll share findings to keep us building the right thing.`,
+      ].join('\n');
+    case 'autoresearch':
+      return [
+        `For **${g}**, I'll run an autonomous research loop (inspired by karpathy/autoresearch):`,
+        `• Form a hypothesis, then make **one** small change to \`train.py\` — architecture, optimizer, or hyperparameters.`,
+        `• Train for a fixed **5-minute** budget and measure **val_bpb** (validation bits per byte — lower is better).`,
+        `• Keep the change if the metric improves, otherwise discard and revert.`,
+        `• Repeat (~12 experiments/hour, ~100 overnight) and log every run so progress is reproducible.`,
+        '```',
+        'uv run prepare.py   # one-time: data + tokenizer',
+        'uv run train.py     # one 5-min experiment, reports val_bpb',
+        '```',
+        `I'll report the best config and the experiment log so we keep the winning model.`,
       ].join('\n');
     default:
       return [
@@ -208,6 +227,7 @@ function roleArea(role: RoleKind): string {
     writer: 'documentation',
     marketing: 'launch & positioning',
     research: 'user research',
+    autoresearch: 'autonomous experimentation',
     generic: 'general delivery',
   };
   return map[role];

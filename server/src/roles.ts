@@ -44,6 +44,13 @@ export const ROLE_TEMPLATES: RoleTemplate[] = [
     skills: 'Analysis, metrics, experimentation, modeling',
   },
   {
+    title: 'AI Research Agent',
+    emoji: '🔬',
+    color: '#14b8a6',
+    skills:
+      'Autonomous LLM research (karpathy/autoresearch): edits train.py, runs fixed 5-min nanochat training experiments, tracks val_bpb (lower is better), keeps/discards changes, iterates ~12 experiments/hour',
+  },
+  {
     title: 'Technical Writer',
     emoji: '📝',
     color: '#a855f7',

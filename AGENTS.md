@@ -1,5 +1,12 @@
 # AGENTS.md
 
+## Skills
+
+- **Autonomous LLM Research** — `skills/autonomous-research.md`. Use when asked to improve an
+  LLM training setup autonomously via the karpathy/autoresearch loop (edit `train.py`, fixed
+  5-min training budget, optimize `val_bpb`, keep/discard, repeat). The same skill is exposed
+  in the Pingle app as the **"AI Research Agent"** role preset.
+
 ## Cursor Cloud specific instructions
 
 Pingle is an npm-workspaces monorepo with two services:
