@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "autoresearch": {
+      "source": "github/awesome-copilot",
+      "sourceType": "github",
+      "skillPath": "skills/autoresearch/SKILL.md",
+      "computedHash": "8bfae087ef27eb37092d94caf1da3406b500aa908756772bb1349a1ac70823dd"
+    }
+  }
+}

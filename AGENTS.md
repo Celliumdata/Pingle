@@ -2,6 +2,13 @@
 
 ## Skills
 
+- **autoresearch** — `.agents/skills/autoresearch/SKILL.md`. A general autonomous
+  iterative-experimentation loop (define goal + measurable metric + scope, then loop:
+  edit → commit → run → measure → keep/discard) inspired by karpathy/autoresearch. Managed by
+  the [`skills`](https://github.com/vercel-labs/skills) CLI; the source is pinned in
+  `skills-lock.json`. Installed with
+  `npx skills add https://github.com/github/awesome-copilot --skill autoresearch`. Update with
+  `npx skills update`. These files are committed, so no startup install step is needed.
 - **Autonomous LLM Research** — `skills/autonomous-research.md`. Use when asked to improve an
   LLM training setup autonomously via the karpathy/autoresearch loop (edit `train.py`, fixed
   5-min training budget, optimize `val_bpb`, keep/discard, repeat). The same skill is exposed
