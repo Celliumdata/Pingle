@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import type { Agent, Message, Project } from './store.js';
 
 type RoleKind =
+  | 'ceo'
   | 'product'
   | 'engineer'
   | 'design'
@@ -16,6 +17,8 @@ type RoleKind =
 
 function detectRole(title: string): RoleKind {
   const t = title.toLowerCase();
+  // Final decision-maker / executive. Checked first so a CEO always decides.
+  if (/(\bceo\b|chief executive|\bchief\b|founder|executive|decision[- ]?maker)/.test(t)) return 'ceo';
   if (/(product manager|product owner|\bpm\b|program)/.test(t)) return 'product';
   // Autonomous ML/LLM research (karpathy/autoresearch). Checked before the
   // generic engineer/data buckets so "AI Research Agent" maps here.
@@ -33,9 +36,23 @@ function detectRole(title: string): RoleKind {
   return 'generic';
 }
 
+function isDecider(agent: Agent): boolean {
+  return detectRole(agent.title) === 'ceo';
+}
+
 function contributionFor(role: RoleKind, goal: string, agent: Agent): string {
   const g = goal.trim() || 'the project';
   switch (role) {
+    case 'ceo':
+      return [
+        `A clear call is needed to break the standstill on **${g}**. Guiding principle (Dao): clarity over noise — act with the grain of the situation, decide, then adapt.`,
+        `**Scenarios weighed:**`,
+        `• Ship the leanest end-to-end slice now — maximum momentum, some polish risk.`,
+        `• Invest in foundations first — safer long term, slower to value.`,
+        `• Do both in parallel — ship the slice while a thin track hardens the core.`,
+        `**Decision:** pursue the parallel path — ship the smallest working slice of "${g}" immediately while hardening the core alongside it. This is the precise, efficient, and most beneficial balance of speed, quality, and risk.`,
+        `**Rationale:** it keeps choices reversible, preserves momentum, and concentrates effort on the single outcome that matters. Owners keep their workstreams; we review at milestone one. The decision is final — let's execute.`,
+      ].join('\n');
     case 'product':
       return [
         `Here's how I'd frame **${g}**. Target outcome and the "definition of done":`,
@@ -160,6 +177,9 @@ export function runCollaboration(project: Project, agents: Agent[]): Collaborati
   const goal = project.goal.trim() || project.name;
   const messages: Message[] = [];
 
+  const deciders = agents.filter(isDecider);
+  const contributors = agents.filter((a) => !isDecider(a));
+
   messages.push(
     makeMessage(
       null,
@@ -169,24 +189,43 @@ export function runCollaboration(project: Project, agents: Agent[]): Collaborati
     ),
   );
 
-  for (const agent of agents) {
+  // Contributors weigh in first.
+  for (const agent of contributors) {
     const role = detectRole(agent.title);
     messages.push(makeMessage(agent, contributionFor(role, goal, agent)));
   }
 
-  const artifact = buildArtifact(project, agents, goal);
+  // If there are competing inputs and a final decision-maker, flag the standstill
+  // and hand the call to the CEO(s), who decide last.
+  if (deciders.length > 0 && contributors.length >= 2) {
+    messages.push(
+      makeMessage(
+        null,
+        `The team has put forward multiple strong directions for **${goal}** and reached a standstill. Handing the final call to ${deciders
+          .map((d) => `${d.emoji} ${d.name}`)
+          .join(' & ')} (${deciders[0].title}).`,
+      ),
+    );
+  }
+  for (const agent of deciders) {
+    messages.push(makeMessage(agent, contributionFor('ceo', goal, agent)));
+  }
 
-  messages.push(
-    makeMessage(
-      null,
-      `Synthesis complete ✅ — I combined everyone's input into a shared build plan and deliverable. See the **Deliverable** tab for the compiled artifact.`,
-    ),
-  );
+  const artifact = buildArtifact(project, agents, goal, deciders);
+
+  const synthesis =
+    deciders.length > 0
+      ? `Standstill resolved ✅ — ${deciders
+          .map((d) => d.name)
+          .join(' & ')} made the final call as ${deciders[0].title}. I compiled the plan and the executive decision into the **Deliverable** tab.`
+      : `Synthesis complete ✅ — I combined everyone's input into a shared build plan and deliverable. See the **Deliverable** tab for the compiled artifact.`;
+
+  messages.push(makeMessage(null, synthesis));
 
   return { messages, artifact };
 }
 
-function buildArtifact(project: Project, agents: Agent[], goal: string): string {
+function buildArtifact(project: Project, agents: Agent[], goal: string, deciders: Agent[]): string {
   const lines: string[] = [];
   lines.push(`# ${project.name} — Build Plan`);
   lines.push('');
@@ -194,6 +233,13 @@ function buildArtifact(project: Project, agents: Agent[], goal: string): string 
   lines.push('');
   lines.push(`**Team:** ${agents.map((a) => `${a.emoji} ${a.name} — ${a.title}`).join(' · ') || 'none'}`);
   lines.push('');
+  if (deciders.length > 0) {
+    lines.push('## Final Decision (CEO)');
+    lines.push(
+      `Decided by ${deciders.map((d) => `${d.emoji} ${d.name}`).join(' & ')}: ship the smallest end-to-end slice of "${goal}" now while hardening the core in parallel — the precise, efficient, and most beneficial balance of speed, quality, and risk. **Decision is final.**`,
+    );
+    lines.push('');
+  }
   lines.push('## Milestones');
   lines.push('1. **Discovery** — validate the problem and define scope.');
   lines.push('2. **MVP build** — thin end-to-end slice that delivers core value.');
@@ -218,6 +264,7 @@ function buildArtifact(project: Project, agents: Agent[], goal: string): string 
 
 function roleArea(role: RoleKind): string {
   const map: Record<RoleKind, string> = {
+    ceo: 'final decisions & direction',
     product: 'scope & roadmap',
     engineer: 'architecture & implementation',
     design: 'UX & visual design',

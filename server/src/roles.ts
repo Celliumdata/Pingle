@@ -8,6 +8,13 @@ export interface RoleTemplate {
 // Quick-add presets surfaced in the UI. `color` values are tailwind-friendly hex tokens.
 export const ROLE_TEMPLATES: RoleTemplate[] = [
   {
+    title: 'CEO',
+    emoji: '🧘',
+    color: '#eab308',
+    skills:
+      'Final decision-maker: breaks standstills with decisive, precise calls. Dao-grounded and well-rounded, draws on ancient and modern knowledge, weighs all scenarios, and chooses the most beneficial, efficient, effective path.',
+  },
+  {
     title: 'Product Manager',
     emoji: '🧭',
     color: '#8b5cf6',
