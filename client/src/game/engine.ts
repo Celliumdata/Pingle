@@ -162,7 +162,8 @@ function enemyTurn(s: GameState, rng: Rng): void {
   const move = MOVES[enemyMoveId];
   const dmg = computeDamage(enemy, active, SPECIES[active.speciesId].type, move, rng);
   active.hp = Math.max(0, active.hp - dmg);
-  battle.message = `Wild ${SPECIES[enemy.speciesId].name} used ${move.name}! (-${dmg} HP)`;
+  const enemyLine = `Wild ${SPECIES[enemy.speciesId].name} used ${move.name}! (-${dmg} HP)`;
+  battle.message = battle.message ? `${battle.message}\n${enemyLine}` : enemyLine;
   if (active.hp <= 0) {
     pushLog(s, `${SPECIES[active.speciesId].name} fainted!`);
     if (firstAliveIndex(s.party) === -1) {
@@ -338,6 +339,7 @@ export function reduce(state: GameState, action: Action, rng: Rng = Math.random)
       const dmg = computeDamage(active, battle.enemy, SPECIES[battle.enemy.speciesId].type, move, rng);
       battle.enemy.hp = Math.max(0, battle.enemy.hp - dmg);
       battle.message = `${SPECIES[active.speciesId].name} used ${move.name}! (-${dmg} HP)`;
+      pushLog(s, `${SPECIES[active.speciesId].name} used ${move.name}.`);
       if (battle.enemy.hp <= 0) {
         const reward = battle.enemy.level * 8;
         s.gold += reward;

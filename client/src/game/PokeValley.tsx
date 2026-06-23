@@ -294,7 +294,7 @@ function BattleOverlay({
           </div>
         </div>
 
-        <div className="mb-4 min-h-[2.5rem] rounded-lg bg-black/30 px-3 py-2 text-sm text-gray-100">
+        <div className="mb-4 min-h-[2.5rem] whitespace-pre-line rounded-lg bg-black/30 px-3 py-2 text-sm text-gray-100">
           {battle.message}
         </div>
 
