@@ -12,6 +12,8 @@ collaboration that produces a build plan and deliverable.
   collaboration.
 - **Collaboration engine** — each agent contributes based on its role, and the work is
   synthesized into a compiled **Deliverable** (a build plan you can read in the UI).
+- **Pokevalley playable slice** — a local browser game tab where you move around a
+  farm map, plant and harvest berries, forage, and befriend wild companions.
 
 ## Tech stack
 

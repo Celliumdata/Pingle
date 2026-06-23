@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { api } from './api';
 import type { Agent, Project, RoleTemplate } from './types';
 import { AgentsView } from './components/AgentsView';
+import { PokevalleyGame } from './components/PokevalleyGame';
 import { ProjectsView } from './components/ProjectsView';
 
-type Tab = 'agents' | 'projects';
+type Tab = 'agents' | 'projects' | 'pokevalley';
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('agents');
@@ -112,6 +113,9 @@ export default function App() {
           <NavButton active={tab === 'projects'} onClick={() => setTab('projects')}>
             🚀 Projects <span className="ml-1 opacity-60">({projects.length})</span>
           </NavButton>
+          <NavButton active={tab === 'pokevalley'} onClick={() => setTab('pokevalley')}>
+            🌱 Pokevalley
+          </NavButton>
         </nav>
       </header>
 
@@ -129,7 +133,7 @@ export default function App() {
           onUpdate={updateAgent}
           onDelete={deleteAgent}
         />
-      ) : (
+      ) : tab === 'projects' ? (
         <ProjectsView
           projects={projects}
           agents={agents}
@@ -139,6 +143,8 @@ export default function App() {
           onRun={runProject}
           running={running}
         />
+      ) : (
+        <PokevalleyGame />
       )}
     </div>
   );
