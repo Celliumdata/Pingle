@@ -12,6 +12,10 @@ collaboration that produces a build plan and deliverable.
   collaboration.
 - **Collaboration engine** — each agent contributes based on its role, and the work is
   synthesized into a compiled **Deliverable** (a build plan you can read in the UI).
+- **PokéValley** — a playable in-app game (a Pokémon × Stardew Valley mashup) shipped by the
+  agents. Open the **🌾 PokéValley** tab to till and plant crops, sleep to advance the day,
+  trade at the shop, and catch wild creatures in the tall grass. It runs entirely client-side
+  and saves to `localStorage` (no server or API keys needed).
 
 ## Tech stack
 
