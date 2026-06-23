@@ -13,6 +13,11 @@ collaboration that produces a build plan and deliverable.
 - **Collaboration engine** — each agent contributes based on its role, and the work is
   synthesized into a compiled **Deliverable** (a build plan you can read in the UI).
 
+## Project artifacts
+
+- [Pokevalley milestone 1 discovery](docs/pokevalley-discovery.md) — scoped discovery
+  package for a cozy creature-collecting farming RPG.
+
 ## Tech stack
 
 - **Frontend:** React 18 + TypeScript + Vite + Tailwind CSS
