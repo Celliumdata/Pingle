@@ -3,12 +3,12 @@ import type { Crop, ElementType, ItemDef, Move, Species, ToolId } from './types'
 /** World map. Each char is a tile. See TILE_INFO for meanings. */
 export const MAP: string[] = [
   'TTTTTTTTTTTTTTTTTTTT',
-  'T..B.......,,,,,,..T',
+  'T..........,,,,,,..T',
   'T.........,,,,,,,,.T',
   'T..dddd...,,,,,,,,.T',
   'T..dddd...,,,,,,,,.T',
   'T..dddd....,,,,,,..T',
-  'T..dddd............T',
+  'T..dddd.....B......T',
   'T..........p...www.T',
   'T..........p...www.T',
   'T......S...p...www.T',
