@@ -9,7 +9,7 @@ function CropSprite({ cropId, growth }: { cropId: string; growth: number }) {
   const scale = 0.45 + frac * 0.55;
   if (growth === 0) {
     // freshly planted seed
-    return <span style={{ fontSize: TILE * 0.34, opacity: 0.85 }}>🌱</span>;
+    return <span style={{ fontSize: TILE * 0.52 }}>🌱</span>;
   }
   return (
     <span
@@ -40,6 +40,7 @@ export function World({ state }: { state: GameState }) {
           const plot = state.soil[key];
           const tilled = plot?.tilled;
           const watered = plot?.watered;
+          const isBuilding = ch === 'B' || ch === 'S';
           let bg = info?.color ?? '#000';
           if (tilled) bg = watered ? '#5b3d22' : '#7a5733';
           return (
@@ -55,9 +56,29 @@ export function World({ state }: { state: GameState }) {
                 boxShadow: tilled ? 'inset 0 0 0 1px rgba(0,0,0,0.25)' : 'inset 0 0 0 0.5px rgba(0,0,0,0.06)',
               }}
             >
+              {isBuilding && (
+                <span
+                  className="absolute inset-1 rounded-md"
+                  style={{
+                    background: ch === 'S' ? 'rgba(214,138,46,0.92)' : 'rgba(120,80,160,0.55)',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.25)',
+                  }}
+                />
+              )}
               {!tilled && info?.decor && (
-                <span style={{ fontSize: TILE * 0.6, lineHeight: 1, opacity: ch === 'w' ? 0.55 : 1 }}>
+                <span
+                  className="relative"
+                  style={{ fontSize: TILE * (isBuilding ? 0.78 : 0.6), lineHeight: 1, opacity: ch === 'w' ? 0.55 : 1 }}
+                >
                   {info.decor}
+                </span>
+              )}
+              {isBuilding && (
+                <span
+                  className="absolute bottom-0 left-0 right-0 text-center font-bold uppercase text-white"
+                  style={{ fontSize: 9, lineHeight: '11px', textShadow: '0 1px 2px rgba(0,0,0,0.9)' }}
+                >
+                  {ch === 'S' ? 'Shop' : 'Bed'}
                 </span>
               )}
               {watered && !plot?.crop && (
