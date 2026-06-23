@@ -3,8 +3,9 @@ import { api } from './api';
 import type { Agent, Project, RoleTemplate } from './types';
 import { AgentsView } from './components/AgentsView';
 import { ProjectsView } from './components/ProjectsView';
+import { PokeValley } from './game/PokeValley';
 
-type Tab = 'agents' | 'projects';
+type Tab = 'agents' | 'projects' | 'play';
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('agents');
@@ -112,6 +113,9 @@ export default function App() {
           <NavButton active={tab === 'projects'} onClick={() => setTab('projects')}>
             🚀 Projects <span className="ml-1 opacity-60">({projects.length})</span>
           </NavButton>
+          <NavButton active={tab === 'play'} onClick={() => setTab('play')}>
+            🌱 PokeValley
+          </NavButton>
         </nav>
       </header>
 
@@ -121,7 +125,7 @@ export default function App() {
         </div>
       )}
 
-      {tab === 'agents' ? (
+      {tab === 'agents' && (
         <AgentsView
           agents={agents}
           roles={roles}
@@ -129,7 +133,8 @@ export default function App() {
           onUpdate={updateAgent}
           onDelete={deleteAgent}
         />
-      ) : (
+      )}
+      {tab === 'projects' && (
         <ProjectsView
           projects={projects}
           agents={agents}
@@ -139,6 +144,18 @@ export default function App() {
           onRun={runProject}
           running={running}
         />
+      )}
+      {tab === 'play' && (
+        <section>
+          <div className="mb-4">
+            <h2 className="text-lg font-bold text-white">🌱 PokeValley</h2>
+            <p className="text-sm text-gray-400">
+              A tiny Pokémon × Stardew Valley game — farm crops, explore, and catch creatures in the
+              tall grass.
+            </p>
+          </div>
+          <PokeValley />
+        </section>
       )}
     </div>
   );
